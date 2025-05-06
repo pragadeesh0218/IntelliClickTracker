@@ -1,7 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { searchCities, getCities, getCityById, toggleFavorite, getFavoriteCities } from "./controllers/citiesController";
-import { getCurrentWeather, getWeatherForecast, getWeatherSummary } from "./controllers/weatherController";
+import { searchCities, getCities, getCityById, toggleFavorite, getFavoriteCities, getCurrentWeather, getWeatherForecast, getWeatherSummary } from "./controllers/index";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes prefix
