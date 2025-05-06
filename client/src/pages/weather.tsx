@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
-import WeatherDetails from "@/components/WeatherDetails";
+import { WeatherDetails } from "@/components/Weather";
 import { Helmet } from "react-helmet";
 import { queryClient } from "@/lib/queryClient";
+import { City } from "@/types";
 
 const WeatherPage = () => {
   const [match, params] = useRoute("/weather/:cityId");
   const cityId = params?.cityId;
 
-  const { data: city } = useQuery({
+  const { data: city } = useQuery<City>({
     queryKey: [`/api/cities/${cityId}`],
-    queryFn: undefined,
     enabled: !!cityId,
   });
 
@@ -50,11 +50,9 @@ const WeatherPage = () => {
     if (cityId) {
       queryClient.prefetchQuery({
         queryKey: [`/api/weather/current/${cityId}`],
-        queryFn: undefined,
       });
       queryClient.prefetchQuery({
         queryKey: [`/api/weather/forecast/${cityId}`],
-        queryFn: undefined,
       });
     }
   }, [cityId]);

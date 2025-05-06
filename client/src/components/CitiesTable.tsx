@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { City, SortConfig, FilterConfig } from "@/types";
 import WeatherIcon from "./WeatherIcon";
-import { formatPopulation } from "@/utils/formatters";
+import { formatPopulation } from "@/utils/utils";
 import { useSettings } from "@/context/SettingsContext";
 
 const CitiesTable = () => {
