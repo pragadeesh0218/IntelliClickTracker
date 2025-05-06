@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { City, SortConfig, FilterConfig } from "@/types";
-import WeatherIcon from "./WeatherIcon";
+import { WeatherIcon } from "./Weather";
 import { formatPopulation } from "@/utils/utils";
 import { useSettings } from "@/context/SettingsContext";
 

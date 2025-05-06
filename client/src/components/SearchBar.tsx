@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { City } from "@/types";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
 
 const SearchBar = () => {
