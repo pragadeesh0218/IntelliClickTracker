@@ -6,25 +6,19 @@ import WeatherIcon from "./WeatherIcon";
 import { formatPopulation } from "@/utils/formatters";
 import { useSettings } from "@/context/SettingsContext";
 
-interface CitiesResponse {
-  cities: City[];
-  hasNextPage: boolean;
-}
-
 const CitiesTable = () => {
   const [page, setPage] = useState(1);
   const [cities, setCities] = useState<City[]>([]);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: "name", direction: "asc" });
   const [filterConfig, setFilterConfig] = useState<FilterConfig>({ continent: "all" });
-  const observerTarget = useRef<IntersectionObserver | null>(null);
+  const observerTarget = useRef<HTMLDivElement>(null);
   const { settings } = useSettings();
 
-  const { data, isLoading, isFetching } = useQuery<CitiesResponse>({
+  const { data, isLoading, isFetching, hasNextPage } = useQuery({
     queryKey: ["/api/cities", page, sortConfig, filterConfig],
+    queryFn: undefined,
+    keepPreviousData: true,
   });
-  
-  const hasNextPage = data?.hasNextPage ?? false;
-  const citiesData = data?.cities || [];
 
   useEffect(() => {
     if (data && !isLoading) {
@@ -86,27 +80,18 @@ const CitiesTable = () => {
   };
 
   // Intersection observer for infinite scrolling
-  const lastCityRef = useCallback(
-    (node: HTMLTableRowElement) => {
-      if (isLoading || isFetching || !node) return;
-      
-      // Clean up previous observer
-      if (observerTarget.current) {
-        observerTarget.current.disconnect();
+  const lastCityRef = useCallback((node: HTMLTableRowElement) => {
+    if (isLoading || isFetching) return;
+    if (observerTarget.current) observerTarget.current.disconnect();
+    
+    observerTarget.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasNextPage) {
+        setPage(prev => prev + 1);
       }
-      
-      // Create new observer
-      const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          setPage(prev => prev + 1);
-        }
-      });
-      
-      observer.observe(node);
-      observerTarget.current = observer;
-    },
-    [isLoading, isFetching, hasNextPage]
-  );
+    });
+    
+    if (node) observerTarget.current.observe(node);
+  }, [isLoading, isFetching, hasNextPage]);
 
   const formatTemp = (temp?: number) => {
     if (temp === undefined) return 'N/A';
