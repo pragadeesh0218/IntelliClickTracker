@@ -86,18 +86,27 @@ const CitiesTable = () => {
   };
 
   // Intersection observer for infinite scrolling
-  const lastCityRef = useCallback((node: HTMLTableRowElement) => {
-    if (isLoading || isFetching) return;
-    if (observerTarget.current) observerTarget.current.disconnect();
-    
-    observerTarget.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasNextPage) {
-        setPage(prev => prev + 1);
+  const lastCityRef = useCallback(
+    (node: HTMLTableRowElement) => {
+      if (isLoading || isFetching || !node) return;
+      
+      // Clean up previous observer
+      if (observerTarget.current) {
+        observerTarget.current.disconnect();
       }
-    });
-    
-    if (node) observerTarget.current.observe(node);
-  }, [isLoading, isFetching, hasNextPage]);
+      
+      // Create new observer
+      const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          setPage(prev => prev + 1);
+        }
+      });
+      
+      observer.observe(node);
+      observerTarget.current = observer;
+    },
+    [isLoading, isFetching, hasNextPage]
+  );
 
   const formatTemp = (temp?: number) => {
     if (temp === undefined) return 'N/A';

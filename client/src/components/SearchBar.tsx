@@ -4,6 +4,8 @@ import { City } from "@/types";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useQuery } from "@tanstack/react-query";
 
+type SearchResponse = City[];
+
 const SearchBar = () => {
   const [searchValue, setSearchValue] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -12,7 +14,7 @@ const SearchBar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [, setLocation] = useLocation();
 
-  const { data: searchResults, isLoading } = useQuery({
+  const { data: searchResults, isLoading } = useQuery<SearchResponse>({
     queryKey: ["/api/cities/search", debouncedSearchValue],
     enabled: debouncedSearchValue.length > 2,
   });
