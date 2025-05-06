@@ -11,14 +11,19 @@ const CitiesTable = () => {
   const [cities, setCities] = useState<City[]>([]);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: "name", direction: "asc" });
   const [filterConfig, setFilterConfig] = useState<FilterConfig>({ continent: "all" });
-  const observerTarget = useRef<HTMLDivElement>(null);
+  const observerTarget = useRef<IntersectionObserver | null>(null);
   const { settings } = useSettings();
 
-  const { data, isLoading, isFetching, hasNextPage } = useQuery({
+  interface CitiesResponse {
+    cities: City[];
+    hasNextPage: boolean;
+  }
+
+  const { data = { cities: [], hasNextPage: false } as CitiesResponse, isLoading, isFetching } = useQuery<CitiesResponse>({
     queryKey: ["/api/cities", page, sortConfig, filterConfig],
-    queryFn: undefined,
-    keepPreviousData: true,
   });
+  
+  const hasNextPage = data?.hasNextPage;
 
   useEffect(() => {
     if (data && !isLoading) {

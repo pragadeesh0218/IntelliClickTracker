@@ -3,7 +3,7 @@ import { CurrentWeather, ForecastData, DailyForecast } from "@/types";
 import { getCityById } from "./citiesController";
 
 // Get OpenWeatherMap API key from environment variables
-const WEATHER_API_KEY = process.env.OPENWEATHER_API_KEY || "";
+const WEATHER_API_KEY = process.env.OPENWEATHER_API_KEY || "9315eb1395ee2436086bfa4922c5b53f";
 const WEATHER_API_BASE_URL = "https://api.openweathermap.org/data/2.5";
 
 export async function getCurrentWeather(cityId: string): Promise<CurrentWeather> {
