@@ -14,7 +14,6 @@ const SearchBar = () => {
 
   const { data: searchResults, isLoading } = useQuery({
     queryKey: ["/api/cities/search", debouncedSearchValue],
-    queryFn: undefined,
     enabled: debouncedSearchValue.length > 2,
   });
 

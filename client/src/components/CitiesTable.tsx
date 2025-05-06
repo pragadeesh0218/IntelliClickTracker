@@ -6,19 +6,25 @@ import WeatherIcon from "./WeatherIcon";
 import { formatPopulation } from "@/utils/formatters";
 import { useSettings } from "@/context/SettingsContext";
 
+interface CitiesResponse {
+  cities: City[];
+  hasNextPage: boolean;
+}
+
 const CitiesTable = () => {
   const [page, setPage] = useState(1);
   const [cities, setCities] = useState<City[]>([]);
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: "name", direction: "asc" });
   const [filterConfig, setFilterConfig] = useState<FilterConfig>({ continent: "all" });
-  const observerTarget = useRef<HTMLDivElement>(null);
+  const observerTarget = useRef<IntersectionObserver | null>(null);
   const { settings } = useSettings();
 
-  const { data, isLoading, isFetching, hasNextPage } = useQuery({
+  const { data, isLoading, isFetching } = useQuery<CitiesResponse>({
     queryKey: ["/api/cities", page, sortConfig, filterConfig],
-    queryFn: undefined,
-    keepPreviousData: true,
   });
+  
+  const hasNextPage = data?.hasNextPage ?? false;
+  const citiesData = data?.cities || [];
 
   useEffect(() => {
     if (data && !isLoading) {
